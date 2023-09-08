@@ -8,6 +8,7 @@ import { RootState } from "./store";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { StackScreenProps } from "@react-navigation/stack";
 import { StackParamList } from "./App";
+import { ProductItem } from "./components/ProductItem";
 
 export default (props: StackScreenProps<StackParamList, "Home">) => {
   const fetching = useSelector((state: RootState) => state.inventory.fetching);
@@ -28,7 +29,7 @@ export default (props: StackScreenProps<StackParamList, "Home">) => {
       </Appbar.Header>
 
       <ScrollView
-        style={{ flex: 1 }}
+        style={{ flex: 1, backgroundColor: "white" }}
         refreshControl={
           <RefreshControl
             refreshing={fetching}
@@ -36,20 +37,18 @@ export default (props: StackScreenProps<StackParamList, "Home">) => {
           />
         }
       >
-        <SafeAreaView>
-          <DataTable>
-            <DataTable.Header>
-              <DataTable.Title>Product Code</DataTable.Title>
-              <DataTable.Title numeric>Scan Date</DataTable.Title>
-            </DataTable.Header>
-            {inventory.map((record, index) => (
-              <DataTable.Row key={index}>
-                <DataTable.Cell>{record.fields["Product Code"]}</DataTable.Cell>
-                <DataTable.Cell numeric>
-                  {new Date(record.fields.Posted).toLocaleDateString()}{" "}
-                  {new Date(record.fields.Posted).toLocaleTimeString()}
-                </DataTable.Cell>
-              </DataTable.Row>
+        <SafeAreaView style={{ marginTop: 0 }}>
+          <DataTable
+            style={{ gap: 12, paddingHorizontal: 16, backgroundColor: "white" }}
+          >
+            {inventory.map((record) => (
+              <ProductItem
+                key={record.id}
+                date={record.fields.Posted}
+                productName={record.fields["Product Name"]}
+                categories={record.fields["Product Categories"]?.split(",")}
+                productImage={record.fields["Product Image"] || undefined}
+              />
             ))}
           </DataTable>
         </SafeAreaView>
